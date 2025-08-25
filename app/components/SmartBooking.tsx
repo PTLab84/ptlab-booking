@@ -171,3 +171,118 @@ export default function SmartBooking() {
                     key={`rec-${i}`}
                     className="border-2 border-green-400/60 bg-green-500/10 rounded-full px-4 py-3 hover:bg-green-500/20 text-left"
                     onClick={() => onChooseSlot(s)}
+                  >
+                    {hhmm(s.start)} – {hhmm(s.end)}
+                  </button>
+                ))}
+              </div>
+              <div className="mb-2 text-sm uppercase tracking-wide text-slate-400">Other times available</div>
+            </>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {(recs.length > 0 ? other : slots).map((s, i) => (
+              <button
+                key={i}
+                className="rounded-full bg-slate-800 hover:bg-slate-700 px-4 py-3 text-left"
+                onClick={() => onChooseSlot(s)}
+              >
+                {hhmm(s.start)} – {hhmm(s.end)}
+              </button>
+            ))}
+            {slots.length === 0 && (
+              <div className="text-slate-400">No availability for this day.</div>
+            )}
+          </div>
+
+          <div className="mt-8 border-t border-slate-700 pt-4">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="text-sm text-slate-400">
+                Don’t see your ideal time? Request a different time and we’ll contact you.
+              </div>
+              <button className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-4 py-2"
+                onClick={() => setRequestOpen(true)}>
+                Request a different time
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Request form drawer */}
+        {requestOpen && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-full max-w-2xl bg-slate-900 rounded-2xl p-5 border border-slate-700">
+            <div className="font-semibold mb-3">Request a different time</div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <input placeholder="Name *" className="bg-slate-800 rounded px-3 py-2"
+                value={reqName} onChange={e => setReqName(e.target.value)} />
+              <input placeholder="Email" className="bg-slate-800 rounded px-3 py-2"
+                value={reqEmail} onChange={e => setReqEmail(e.target.value)} />
+              <input placeholder="Mobile" className="bg-slate-800 rounded px-3 py-2"
+                value={reqMobile} onChange={e => setReqMobile(e.target.value)} />
+            </div>
+            <div className="text-xs text-slate-400 mt-2">* Name and either Email or Mobile are required.</div>
+            <div className="mt-3 flex gap-3">
+              <button
+                disabled={!requestValid}
+                className={`rounded-full px-4 py-2 ${requestValid ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-slate-700 text-slate-400 cursor-not-allowed'}`}
+                onClick={() => { setRequestOpen(false); alert('Thanks! We’ll contact you.'); }}
+              >
+                Send request
+              </button>
+              <button className="rounded-full px-4 py-2 bg-slate-800 hover:bg-slate-700" onClick={() => setRequestOpen(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Week header / controls
+  function WeekControls() {
+    return (
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-lg font-semibold">Next 4 weeks</div>
+        <div className="flex gap-2">
+          <button className="px-3 py-1 bg-slate-800 rounded hover:bg-slate-700" onClick={() => setWeek0(mondayOfWeek(addDays(week0, -7)))}>{'‹'} Prev</button>
+          <button className="px-3 py-1 bg-slate-800 rounded hover:bg-slate-700" onClick={() => setWeek0(mondayOfWeek(new Date()))}>This week</button>
+          <button className="px-3 py-1 bg-slate-800 rounded hover:bg-slate-700" onClick={() => setWeek0(mondayOfWeek(addDays(week0, 7)))}>Next {'›'}</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto p-6">
+      {/* Logo / header optional – add your logo in /public later */}
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="text-2xl font-bold">PTLab Booking</div>
+      </div>
+
+      {/* Step 1 — choose a service */}
+      <div className="mb-6">
+        <div className="text-sm text-slate-400 mb-2">Step 1 — Choose a service</div>
+        <div className="flex flex-wrap gap-3">
+          {SERVICES.map(s => (
+            <button key={s.id}
+              className={`px-4 py-2 rounded-full border ${serviceId === s.id ? 'border-orange-500 bg-orange-500/10 text-orange-200' : 'border-slate-700 bg-slate-800 hover:bg-slate-700'}`}
+              onClick={() => setServiceId(s.id)}
+            >
+              {s.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Step 2 — calendar grid */}
+      <div className="mb-3 text-sm text-slate-400">Step 2 — Pick a day (Mon–Sat). Grey = unavailable or past days of current week.</div>
+      <WeekControls />
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        {days.map((d, i) => (
+          <DayCell key={i} day={d} />
+        ))}
+      </div>
+
+      {openDay && <DayModal day={openDay} />}
+    </div>
+  );
+}
