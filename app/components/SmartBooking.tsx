@@ -255,7 +255,7 @@ export default function SmartBooking() {
     <div className="max-w-6xl mx-auto p-6">
       {/* Logo / header optional – add your logo in /public later */}
       <div className="mb-6 flex items-center justify-between gap-4">
-        <div className="text-2xl font-bold">PTLab Booking</div>
+        <img src="/logo.png" alt="PTLab" className="h-12 w-auto" />
       </div>
 
       {/* Step 1 — choose a service */}
