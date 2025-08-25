@@ -1,5 +1,6 @@
 import './globals.css';
-export const metadata = { title: "PTLab Booking", description: "Smart booking preview" };
+
+export const metadata = { title: 'PTLab Booking', description: 'Smart booking preview' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
